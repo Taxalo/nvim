@@ -1,4 +1,10 @@
 return {
 	"nvim-treesitter/nvim-treesitter",
-	build = ":TSUpdate"
+	build = ":TSUpdate",
+	config = function()
+		require("nvim-treesitter.configs").setup {
+			ensure_installed = { "zig", "elixir" },
+			highlight = { enable = true }
+		}
+	end
 }

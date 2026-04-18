@@ -17,20 +17,24 @@ return
 		require("fidget").setup()
 		local cmp = require("cmp")
 		local capabilities = require('cmp_nvim_lsp').default_capabilities()
+		vim.lsp.config('zls', {
+			cmd = { "/Users/david/.zvm/bin/zls" },
+		})
+		vim.lsp.enable('zls')
+
 		require("mason").setup()
 		require("mason-lspconfig").setup({
 			ensure_installed = {
 				"lua_ls",
 				"rust_analyzer",
-				"tsserver"
+				--  "zls",
 			},
 			handlers = {
 				function(server_name)
-					require("lspconfig")[server_name].setup({capabilities = capabilities})
+					vim.lsp.config(server_name, { capabilities = capabilities })
 				end,
 				["lua_ls"] = function()
-					local lspconfig = require("lspconfig")
-					lspconfig.lua_ls.setup({
+					vim.lsp.config('lua_ls', {
 						settings = {
 							Lua = {
 								diagnostics = {
@@ -39,9 +43,12 @@ return
 							}
 						}
 					})
+				end,
+				["zls"] = function()
+					require('lspconfig').zls.setup({
+						cmd = { "/Users/david/zls/zig-out/bin/zls" },
+					})
 				end
-
-
 			}
 		})
 		cmp.setup({
@@ -67,6 +74,7 @@ return
 
 		vim.diagnostic.config({
 			update_in_insert = true,
+			virtual_text = true,
 			float = {
 				focusable = false,
 				style = "minimal",
